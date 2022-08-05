@@ -13,26 +13,32 @@ OSSLINC=$(OSSLPATH)/include
 CC=gcc
 
 # Force 32 bit
-CFLAGS= -DUSEOPENSSL -g -I. -I$(OSSLINC) -Wall -m32 
-OSSLLIB=$(OSSLPATH)/lib
+#CFLAGS= -DUSEOPENSSL -g -I. -I$(OSSLINC) -Wall -m32 
+#OSSLLIB=$(OSSLPATH)/lib
 
 # 64 bit if default for compiler setup
-#CFLAGS= -DUSEOPENSSL -g -I. -I$(OSSLINC) -Wall
-#OSSLLIB=$(OSSLPATH)/lib64
+CFLAGS= -DUSEOPENSSL -g -I. -I$(OSSLINC) -Wall
+OSSLLIB=$(OSSLPATH)/lib64
 
 
 # This is to link with whatever we have, SSL crypto lib we put in static
-#LIBS=-L$(OSSLLIB) $(OSSLLIB)/libcrypto.a
-LIBS=-L$(OSSLLIB)
+LIBS=-L$(OSSLLIB) $(OSSLPATH)/lib/x86_64-linux-gnu/libcrypto.a
+#LIBS=-L$(OSSLLIB)
 
 
-all: chntpw chntpw.static cpnt reged reged.static samusrgrp samusrgrp.static sampasswd sampasswd.static
+all: chntpw chntpw.static enable_user_and_clear_password enable_user_and_clear_password.static cpnt reged reged.static samusrgrp samusrgrp.static sampasswd sampasswd.static
 
 chntpw: chntpw.o ntreg.o edlib.o libsam.o
 	$(CC) $(CFLAGS) -o chntpw chntpw.o ntreg.o edlib.o libsam.o $(LIBS)
 
 chntpw.static: chntpw.o ntreg.o edlib.o libsam.o
 	$(CC) -static $(CFLAGS) -o chntpw.static chntpw.o ntreg.o edlib.o libsam.o $(LIBS)
+
+enable_user_and_clear_password: enable_user_and_clear_password.o ntreg.o edlib.o libsam.o
+	$(CC) $(CFLAGS) -o enable_user_and_clear_password enable_user_and_clear_password.o ntreg.o edlib.o libsam.o $(LIBS)
+
+enable_user_and_clear_password.static: enable_user_and_clear_password.o ntreg.o edlib.o libsam.o
+	$(CC) -static $(CFLAGS) -o enable_user_and_clear_password.static enable_user_and_clear_password.o ntreg.o edlib.o libsam.o $(LIBS)
 
 cpnt: cpnt.o
 	$(CC) $(CFLAGS) -o cpnt cpnt.o $(LIBS)
@@ -66,5 +72,5 @@ sampasswd.static: sampasswd.o ntreg.o libsam.o
 	$(CC) -c $(CFLAGS) $<
 
 clean:
-	rm -f *.o chntpw chntpw.static cpnt reged reged.static samusrgrp samusrgrp.static sampasswd sampasswd.static *~
+	rm -f *.o chntpw chntpw.static enable_user_and_clear_password enable_user_and_clear_password.static cpnt reged reged.static samusrgrp samusrgrp.static sampasswd sampasswd.static *~
 
