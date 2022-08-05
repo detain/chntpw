@@ -503,7 +503,7 @@ char *change_pw(char *buf, int rid, int vlen, int stat)
    hexprnt("Lm in buffer: ",(vp+lmpw_offs),16);
 #endif
 
-    return(0)
+    return(0);
 
    } // Forever...
 
